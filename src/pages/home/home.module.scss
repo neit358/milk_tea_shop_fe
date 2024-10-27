@@ -1,0 +1,226 @@
+/* phần sản phẩm */
+.home {
+  &__child {
+    width: 100%;
+    padding-bottom: 35px;
+
+    &__recommend {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #ddd;
+      padding-top: 10px;
+      &__content {
+        font-size: 2.2rem;
+        margin-right: 20px;
+        font-weight: 400;
+        opacity: 0.7;
+        padding-bottom: 20px;
+        border-bottom: 1px solid #fed700;
+      }
+
+      &__icon {
+        font-size: 2.2rem;
+        opacity: 0.4;
+
+        &--left:hover,
+        &--right:hover {
+          color: #fed700;
+        }
+      }
+    }
+
+    &__product {
+      transition: all 500ms ease 0s;
+      padding: 0;
+      margin: 0;
+      list-style-type: none;
+
+      &--wrapper {
+        overflow-x: auto;
+        &::-webkit-scrollbar {
+          display: none;
+        }
+      }
+    }
+
+    &__page {
+      display: flex;
+      align-items: center;
+      margin: 10px auto;
+      width: 55px;
+
+      &__icon {
+        flex: 1;
+        height: 10px;
+        background-color: #ddd;
+        border-radius: 50%;
+        transition: all 500ms ease 0s;
+        margin-left: 5px;
+
+        &--first {
+          flex: 2;
+          border-radius: 2.2rem;
+          background-color: #fed700;
+        }
+      }
+    }
+  }
+
+  /* Shop */
+  &__shop {
+    &__name {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 40px;
+      opacity: 0.6;
+      margin-bottom: 14px;
+      &--left {
+        opacity: 1;
+        font-size: 2.5rem;
+      }
+
+      &--right {
+        font-size: 1.4rem;
+      }
+    }
+
+    &__selection {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1px 20px;
+      height: 45px;
+      background-color: #efefef;
+      border-radius: 7px;
+      &__icon {
+        display: flex;
+        align-items: center;
+        line-height: 2.4rem;
+        height: 100%;
+        cursor: pointer;
+
+        &__child {
+          font-size: 18px;
+          color: rgb(208, 215, 221);
+          &:first-child {
+            color: currentColor;
+          }
+
+          & + & {
+            margin-left: 2rem;
+          }
+        }
+      }
+      &__list {
+        display: flex;
+        opacity: 0.8;
+        font-weight: 500;
+
+        &__sort {
+          margin-right: 15px;
+
+          &__selection {
+            border-radius: 20px;
+            background: #fff
+              url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAUCAMAAACzvE1FAAAADFBMVEUzMzMzMzMzMzMzMzMKAG/3AAAAA3RSTlMAf4C/aSLHAAAAPElEQVR42q3NMQ4AIAgEQTn//2cLdRKppSGzBYwzVXvznNWs8C58CiussPJj8h6NwgorrKRdTvuV9v16Afn0AYFOB7aYAAAAAElFTkSuQmCC")
+              no-repeat right 0.75rem center;
+            background-size: 8px 10px;
+            -webkit-appearance: none;
+            padding: 8px 24px 8px 12px;
+            outline: none;
+            border: 1px solid #ddd;
+            font-size: 1.4rem;
+            &:focus {
+              border: 1px solid #fed700;
+            }
+          }
+        }
+
+        &__show {
+          &__selection {
+            border: none;
+            border-radius: 20px;
+            background: #fff
+              url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAUCAMAAACzvE1FAAAADFBMVEUzMzMzMzMzMzMzMzMKAG/3AAAAA3RSTlMAf4C/aSLHAAAAPElEQVR42q3NMQ4AIAgEQTn//2cLdRKppSGzBYwzVXvznNWs8C58CiussPJj8h6NwgorrKRdTvuV9v16Afn0AYFOB7aYAAAAAElFTkSuQmCC")
+              no-repeat right 0.75rem center;
+            background-size: 8px 10px;
+            -webkit-appearance: none;
+            padding: 8px 24px 8px 12px;
+            outline: none;
+            border: 1px solid #ddd;
+            font-size: 1.4rem;
+            &focus {
+              border: 1px solid #fed700;
+            }
+          }
+        }
+      }
+
+      &__page {
+        opacity: 0.6;
+        &--content {
+          margin: 0 1rem;
+          font-size: 1.4rem;
+        }
+
+        &--input {
+          width: 50px;
+          padding: 8px 0;
+          border: none;
+          border-radius: 20px;
+          text-align: center;
+          outline: none;
+          border: 1px solid #ddd;
+          margin-left: 10px;
+          &:focus {
+            border: 1px solid #fed700;
+          }
+        }
+      }
+    }
+
+    &__product {
+      list-style-type: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    &__page {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 1.4rem;
+      padding: 14px 0;
+      border-top: 1px solid #ddd;
+
+      &--left {
+        opacity: 0.6;
+      }
+
+      &--right {
+        display: flex;
+        &--round {
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border: 1px solid #ddd;
+          cursor: pointer;
+
+          &--active {
+            background-color: var(--primary-color);
+            color: #fff;
+          }
+
+          & + & {
+            margin-left: 1rem;
+          }
+        }
+      }
+    }
+  }
+}

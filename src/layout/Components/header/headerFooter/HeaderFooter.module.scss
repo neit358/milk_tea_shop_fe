@@ -1,0 +1,17 @@
+.header__footer {
+  width: 100%;
+  background-color: #fed700;
+
+  &__child {
+    position: relative;
+
+    &__selection {
+      display: flex;
+      align-items: center;
+      font-size: 1.4rem;
+      padding: 0 15px;
+      margin: 0;
+      list-style-type: none;
+    }
+  }
+}

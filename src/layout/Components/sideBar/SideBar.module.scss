@@ -1,0 +1,38 @@
+/* sản phẩm */
+.sidebar {
+  margin-bottom: 20px !important;
+  &__wrapper {
+    &__child {
+      border: 2px solid #ddd;
+      border-radius: 6px;
+      margin-bottom: 35px;
+      &__header {
+        font-size: 1.6rem;
+        padding: 14px 10px;
+        opacity: 0.6;
+        border-bottom: 1px solid #ddd;
+      }
+      &__body {
+        font-size: 1.2rem;
+        margin: 7px 14px;
+        &__list {
+          font-size: 1.4rem;
+          opacity: 0.6;
+          padding: 0;
+          margin: 0;
+          list-style-type: none;
+          &__select {
+            line-height: 2.2rem;
+            padding: 5px 0;
+            border-bottom: 1px solid #ddd;
+            cursor: pointer;
+            &__parent {
+              display: flex;
+              align-items: center;
+            }
+          }
+        }
+      }
+    }
+  }
+}

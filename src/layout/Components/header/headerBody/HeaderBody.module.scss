@@ -1,0 +1,213 @@
+@mixin visit($pos) {
+  position: $pos;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.header__body {
+  &__child {
+    display: flex;
+    padding: 28px 0;
+    margin-left: -15px;
+    margin-right: -15px;
+
+    /* Phần logo */
+    &__logo {
+      padding: 0 15px;
+    }
+
+    /* Phần search */
+    &__search {
+      position: relative;
+      display: flex;
+      flex: 1;
+      justify-content: end;
+      padding: 0 0 0 15px;
+      border-radius: 2.2rem;
+      border: 2px solid #fed700;
+
+      &__details {
+        position: relative;
+        flex: 1;
+        width: 100%;
+        height: 100%;
+        font-size: 16px;
+
+        &__input {
+          width: 100%;
+          height: 100%;
+          outline: none;
+          border: none;
+        }
+      }
+
+      &__btnSearch {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 60px;
+        background-color: #fed700;
+        border-top-right-radius: 2.2rem;
+        border-bottom-right-radius: 2.2rem;
+
+        &--iconExit &--iconSearch {
+          font-size: 2rem;
+        }
+      }
+    }
+
+    /* Phần selection */
+    &__selection {
+      line-height: 100%;
+      display: flex;
+      align-items: center;
+      padding: 0 15px;
+
+      @mixin selection-all() {
+        height: 100%;
+        &:hover &__hover {
+          display: flex;
+        }
+      }
+
+      &__compare,
+      &__heart,
+      &__acc {
+        @include visit(relative);
+        @include selection-all();
+        width: 50px;
+      }
+
+      &__cart {
+        @include visit(relative);
+        @include selection-all();
+        padding-left: 10px;
+
+        &__content {
+          line-height: 2.2rem;
+          font-size: 20px;
+          margin-left: 5px;
+        }
+
+        &__icon {
+          position: relative;
+
+          &__quality {
+            @include visit(absolute);
+            width: 20px;
+            height: 20px;
+            top: calc(100% - 10px);
+            left: -10px;
+            border-radius: 50%;
+            background-color: #fed700;
+            font-weight: 700;
+            opacity: 1 !important;
+          }
+        }
+      }
+
+      &__icon {
+        font-size: 22px;
+        width: 22px;
+        height: 22px;
+      }
+
+      &__compare__hover::after,
+      &__heart__hover::after,
+      &__acc__hover::after,
+      &__cart__hover::after {
+        content: "";
+        position: absolute;
+        top: calc(0% - 15px);
+        left: 50%;
+        transform: translateX(-50%);
+        border-bottom: 10px solid black;
+        border-left: 8px solid transparent;
+        border-right: 8px solid transparent;
+        border-top: 10px solid transparent;
+      }
+
+      @mixin selection-hover() {
+        position: absolute;
+        background-color: #000;
+        padding: 10px 15px;
+        color: #fff;
+        border-radius: 10px;
+        font-size: 1.4rem;
+        line-height: 2.4rem;
+        font-weight: 700;
+        display: none;
+        transition: all 500ms ease;
+        z-index: 999;
+      }
+
+      &__compare__hover {
+        @include selection-hover();
+        top: 100%;
+      }
+
+      &__heart__hover {
+        @include selection-hover();
+        top: 100%;
+      }
+
+      &__cart__hover {
+        @include selection-hover();
+        bottom: -120%;
+      }
+
+      &__acc {
+        &__hover {
+          @include selection-hover();
+          padding: 0;
+          top: 100%;
+          width: calc(100% + 150px);
+          flex-direction: column;
+          cursor: pointer;
+
+          &__login {
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+          }
+
+          &__register {
+            border-top: 1px solid #ddd;
+            border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
+          }
+
+          &__userName {
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+          }
+
+          &__info {
+            border-top: 1px solid #ddd;
+          }
+
+          &__logout {
+            border-top: 1px solid #ddd;
+            border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
+            color: var(--red-color);
+          }
+
+          &__login,
+          &__register,
+          &__info,
+          &__userName,
+          &__logout {
+            width: 100%;
+            text-align: center;
+            padding: 5px;
+            z-index: 9999;
+            &:hover {
+              background-color: var(--primary-color);
+            }
+          }
+        }
+      }
+    }
+  }
+}

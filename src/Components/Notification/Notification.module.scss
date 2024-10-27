@@ -1,0 +1,86 @@
+.container {
+  position: fixed;
+  top: 32px;
+  right: 32px;
+  z-index: 999999;
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  background-color: #f6f3f3;
+  padding: 30px 15px;
+  border-radius: 5px;
+  width: 450px;
+  box-shadow: 2px 2px 2px rgb(215, 212, 212), 2px -2px 2px rgb(215, 212, 212);
+  font-size: 1.2rem;
+  z-index: 999;
+  animation: FadeInOut ease 0.3s, FadeOpacity linear 0.8s forwards 2s;
+
+  & + & {
+    margin-top: 20px;
+  }
+
+  @keyframes FadeInOut {
+    from {
+      transform: translateX(calc(450px + 32px));
+    }
+    to {
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes FadeOpacity {
+    to {
+      opacity: 0;
+    }
+  }
+
+  &__content {
+    flex: 1;
+    font-size: 1.5rem;
+  }
+
+  @mixin setIconToast($color) {
+    margin: 0 10px;
+    color: $color;
+    font-size: 1.5rem;
+  }
+
+  &__Success__icon {
+    @include setIconToast(greenyellow);
+  }
+
+  &__Error__icon {
+    @include setIconToast(red);
+  }
+
+  &__Warn__icon {
+    @include setIconToast(yellow);
+  }
+
+  &__notification {
+    margin: 0 5px;
+    opacity: 0.5;
+  }
+
+  &__notification i {
+    font-size: 1.5rem;
+  }
+
+  @mixin borderCustom($color) {
+    border-left: 3px solid $color;
+  }
+
+  &__Success {
+    @include borderCustom(greenyellow);
+  }
+
+  &__Error {
+    @include borderCustom(red);
+  }
+
+  &__Warn {
+    @include borderCustom(yellow);
+  }
+}

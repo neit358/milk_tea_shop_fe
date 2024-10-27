@@ -1,0 +1,26 @@
+.sidebarType {
+  line-height: 2.2rem;
+  padding: 5px 0;
+  border-bottom: 1px solid #ddd;
+  cursor: pointer;
+
+  &__parent {
+    display: flex;
+    align-items: center;
+
+    &__content {
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 1;
+      overflow: hidden;
+    }
+
+    &__icon--child {
+      width: 14px;
+      height: 14px;
+    }
+
+    &__quality {
+    }
+  }
+}
