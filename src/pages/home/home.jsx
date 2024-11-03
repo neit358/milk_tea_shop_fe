@@ -31,8 +31,9 @@ const showOptions = [
   { value: -1, name: "Show All" },
 ];
 
-function Home({ search = {} }) {
+function Home({ search = {}, category = {} }) {
   const [listSanPham, setListSanPham] = useState([]);
+  const [listSanPhamRecommend, setListSanPhamRecommend] = useState([]);
   const [sortOrder, setSortOrder] = useState("");
   const [total, setTotal] = useState(0);
   const [limitItem, setLimitItem] = useState(10);
@@ -53,7 +54,8 @@ function Home({ search = {} }) {
         pageIndex ? pageIndex : 1,
         limitItem,
         sortOrder,
-        search
+        search,
+        category
       );
       if (response.data.success) {
         setListSanPham(response.data.result.data);
@@ -63,7 +65,17 @@ function Home({ search = {} }) {
       }
     };
     fetchData();
-  }, [pageIndex, limitItem, sortOrder, search]);
+  }, [pageIndex, limitItem, sortOrder, search, category]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await productService.getProducts();
+      if (response.data.success) {
+        setListSanPhamRecommend(response.data.result);
+      }
+    };
+    fetchData();
+  }, []);
 
   const handleSortChange = (event) => {
     setPageIndex(1);
@@ -102,7 +114,7 @@ function Home({ search = {} }) {
             </div>
             <div className={cx("home__child__product--wrapper")}>
               <ul className={cx("home__child__product", "grid__row--noWrap")}>
-                {listSanPham.map((sanPham, index) => {
+                {listSanPhamRecommend.map((sanPham, index) => {
                   if (sanPham.deXuat) {
                     return <HomeChild key={index} sanPham={sanPham} />;
                   }

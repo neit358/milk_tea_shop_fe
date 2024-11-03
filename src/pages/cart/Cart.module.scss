@@ -1,0 +1,37 @@
+.cart {
+  &__topic {
+    font-size: 40px;
+    line-height: 100%;
+    margin-bottom: 40px;
+    text-align: center;
+  }
+
+  &__table {
+    width: 100%;
+    &--noData {
+      text-align: center;
+      padding: 30px 0;
+    }
+
+    & thead th {
+      border-bottom: 1px solid #ddd;
+      border-top: none;
+      font-weight: 400;
+      color: #747474;
+    }
+  }
+
+  &__tableRow {
+    font-size: 1.4rem;
+    line-height: 2.4rem;
+
+    &__column--2 {
+      width: 150px;
+    }
+
+    &__column {
+      text-align: left;
+      padding: 8px;
+    }
+  }
+}

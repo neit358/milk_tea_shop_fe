@@ -15,6 +15,8 @@ import classNames from "classnames/bind";
 import ToastInformation from "~/Components/Notification";
 import { IconLogo } from "~/Components/Icons";
 import { regexSearchMapper } from "../../../../regex/search.regex";
+import * as authServices from "~/services/auth.service";
+import * as cartServices from "~/services/cart.service";
 
 const cx = classNames.bind(styles);
 
@@ -32,7 +34,7 @@ function HeaderBody({ setSearch }) {
     const listElementName = name.split(" ");
     const filter = {
       $or: listElementName.map((elementName) => ({
-        name: {
+        tenSanPham: {
           $regex: ".*" + regexSearchMapper(elementName) + ".*",
           $options: "i",
         },
@@ -43,35 +45,38 @@ function HeaderBody({ setSearch }) {
   };
 
   const handleOnClickLogout = async () => {
-    // const response = await authServices.logout();
-    // setBool(true);
-    // setContent(response.data.message);
-    // if (response.data.success) {
-    //   setTitle("Success");
-    //   setTimeout(() => {
-    //     localStorage.removeItem("user");
-    //     window.location.reload();
-    //     navigate("/");
-    //   }, 3000);
-    // } else {
-    //   setTitle("Warn");
-    //   setTimeout(() => {
-    //     localStorage.removeItem("user");
-    //     window.location.reload();
-    //     navigate("/");
-    //   }, 3000);
-    // }
+    const response = await authServices.logout();
+    setBool(true);
+    setContent(response.data.message);
+    if (response.data.success) {
+      setTitle("Success");
+      setTimeout(() => {
+        localStorage.removeItem("user");
+        window.location.reload();
+        navigate("/");
+      }, 3000);
+    } else {
+      setTitle("Warn");
+      setTimeout(() => {
+        localStorage.removeItem("user");
+        window.location.reload();
+        navigate("/");
+      }, 3000);
+    }
   };
 
   useEffect(() => {
-    if (user) {
-      // cartServices.getWishlists(user._id).then((res) => {
-      //   if (res.data.success) {
-      //     const cart = res.data.result.items;
-      //     setQuantity(cart.length);
-      //   }
-      // });
-    }
+    const fetchApi = async () => {
+      if (user) {
+        const response = await cartServices.getCarts(user._id);
+        if (response.data.success) {
+          const cart = response.data.result.items;
+          setQuantity(cart.length);
+        }
+      }
+    };
+
+    fetchApi();
   }, [user]);
 
   return (
@@ -113,18 +118,18 @@ function HeaderBody({ setSearch }) {
               <div
                 className={cx("header__body__child__selection__compare__hover")}
               >
-                Compare
+                So sánh
               </div>
             </div>
             <div className={cx("header__body__child__selection__heart")}>
               <FontAwesomeIcon
-                icon={faCartShopping}
+                icon={faHeart}
                 className={cx("header__body__child__selection__icon")}
               />
               <div
                 className={cx("header__body__child__selection__heart__hover")}
               >
-                Buy
+                Yêu thích
               </div>
             </div>
             <div className={cx("header__body__child__selection__acc")}>
@@ -136,7 +141,7 @@ function HeaderBody({ setSearch }) {
                 <div
                   className={cx("header__body__child__selection__acc__hover")}
                 >
-                  <NavLink to="/login">
+                  <NavLink to="/dang_nhap">
                     <div
                       className={cx(
                         "header__body__child__selection__acc__hover__login"
@@ -145,7 +150,7 @@ function HeaderBody({ setSearch }) {
                       Đăng nhập
                     </div>
                   </NavLink>
-                  <NavLink to="/register">
+                  <NavLink to="/dang_ki">
                     <div
                       className={cx(
                         "header__body__child__selection__acc__hover__register"
@@ -164,9 +169,7 @@ function HeaderBody({ setSearch }) {
                       "header__body__child__selection__acc__hover__userName"
                     )}
                   >
-                    {user.personalInformation?.fullName
-                      ? user.personalInformation?.fullName
-                      : user.username}
+                    {user.ten ? user.ten : user.sdt}
                   </div>
                   <div
                     className={cx(
@@ -174,47 +177,30 @@ function HeaderBody({ setSearch }) {
                     )}
                   >
                     <NavLink
-                      to={"/account"}
+                      to={"/tai_khoan"}
                       style={{ textDecoration: "none", color: "currentcolor" }}
                     >
                       Thông tin cá nhân
                     </NavLink>
                   </div>
-                  {user.role === "ChuTro" && (
-                    <div
-                      className={cx(
-                        "header__body__child__selection__acc__hover__info"
-                      )}
-                    >
-                      <NavLink
-                        to={"/articleManager"}
-                        style={{
-                          textDecoration: "none",
-                          color: "currentcolor",
-                        }}
-                      >
-                        Quản lý bài viết
-                      </NavLink>
-                    </div>
-                  )}
                   <div
                     className={cx(
                       "header__body__child__selection__acc__hover__logout"
                     )}
                     onClick={handleOnClickLogout}
                   >
-                    logout
+                    Đăng xuất
                   </div>
                 </div>
               )}
             </div>
-            <NavLink to="/wishlist">
+            <NavLink to="/gio_hang">
               <div className={cx("header__body__child__selection__cart")}>
                 <div
                   className={cx("header__body__child__selection__cart__icon")}
                 >
                   <FontAwesomeIcon
-                    icon={faHeart}
+                    icon={faCartShopping}
                     className={cx("header__body__child__selection__icon")}
                   />
                   <div
@@ -233,7 +219,7 @@ function HeaderBody({ setSearch }) {
                 <div
                   className={cx("header__body__child__selection__cart__hover")}
                 >
-                  Wishlist
+                  Giỏ hàng
                 </div>
               </div>
             </NavLink>
@@ -254,7 +240,7 @@ function HeaderBody({ setSearch }) {
 }
 
 HeaderBody.propTypes = {
-  setSearch: PropTypes.func.isRequired,
+  setSearch: PropTypes.func,
 };
 
 export default HeaderBody;

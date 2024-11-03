@@ -24,11 +24,20 @@ export const getProducts = async () => {
   }
 };
 
-export const filterProducts = async (page, limit, sortOrder, search) => {
+export const filterProducts = async (
+  page,
+  limit,
+  sortOrder,
+  search,
+  category
+) => {
   try {
     const res = await httpRequest.post(
       `${product}/filter?page=${page}&limit=${limit}&sortOrder=${sortOrder}`,
-      search
+      {
+        search,
+        category,
+      }
     );
     return res;
   } catch (err) {

@@ -7,9 +7,13 @@ import config from "~/config/config";
 import PropTypes from "prop-types";
 
 const cx = classNames.bind(styles);
-function SideBarType({ type }) {
+function SideBarType({ type, handleClickCategory }) {
+  const handleClickItemCategory = () => {
+    handleClickCategory(type._id);
+  };
+
   return (
-    <li className={cx("sidebarType")}>
+    <li className={cx("sidebarType")} onClick={handleClickItemCategory}>
       <div className={cx("sidebarType__parent")}>
         <span className={cx("sidebarType__parent__icon")}>
           <FontAwesomeIcon
@@ -19,7 +23,7 @@ function SideBarType({ type }) {
         </span>
         <NavLink to={config.routes.home}>
           <div className={cx("sidebarType__parent__content")}>
-            {type.tenSanPham}
+            {type.tenLoaiSanPham}
           </div>
 
           <span className={cx("sidebarType__parent__quality")}></span>
@@ -30,8 +34,10 @@ function SideBarType({ type }) {
 }
 SideBarType.propTypes = {
   type: PropTypes.shape({
-    tenSanPham: PropTypes.string.isRequired,
+    _id: PropTypes.string.isRequired,
+    tenLoaiSanPham: PropTypes.string.isRequired,
   }).isRequired,
+  handleClickCategory: PropTypes.func.isRequired,
 };
 
 export default SideBarType;
