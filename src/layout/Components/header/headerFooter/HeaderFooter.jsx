@@ -13,7 +13,7 @@ function HeaderFooter() {
     },
     {
       id: 2,
-      name: "Menu",
+      name: "Loại đồ uống",
       url: "/menu",
     },
   ];

@@ -19,7 +19,7 @@ function Header({ setSearch }) {
 }
 
 Header.propTypes = {
-  setSearch: PropTypes.func.isRequired,
+  setSearch: PropTypes.func,
 };
 
 export default Header;

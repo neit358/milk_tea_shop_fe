@@ -8,7 +8,7 @@ function HeaderFooterSelectionMenu({ detail }) {
   return (
     <li className={cx("HeaderFooterSelectionMenu")}>
       <div className={cx("HeaderFooterSelectionMenu__name")}>
-        {detail.tenSanPham}
+        {detail.tenLoaiSanPham}
       </div>
       <ul className={cx("HeaderFooterSelectionMenu__list")}></ul>
     </li>
@@ -17,7 +17,7 @@ function HeaderFooterSelectionMenu({ detail }) {
 
 HeaderFooterSelectionMenu.propTypes = {
   detail: PropTypes.shape({
-    tenSanPham: PropTypes.string.isRequired,
+    tenLoaiSanPham: PropTypes.string.isRequired,
   }).isRequired,
 };
 

@@ -11,6 +11,7 @@ const cx = classNames.bind(styles);
 
 function DefaultLayout({ children }) {
   const [search, setSearch] = useState({});
+  const [category, setCategory] = useState({});
 
   return (
     <div className={cx("container")}>
@@ -22,9 +23,9 @@ function DefaultLayout({ children }) {
         <div className={cx("body__content")}>
           <div className={cx("wrapper")}>
             <div className={cx("grid__row")}>
-              <SideBar />
+              <SideBar setCategory={setCategory} />
               {React.Children.map(children, (child) =>
-                cloneElement(child, { search })
+                cloneElement(child, { search, category })
               )}
             </div>
           </div>
