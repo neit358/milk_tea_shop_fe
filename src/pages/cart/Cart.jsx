@@ -53,6 +53,7 @@ function Cart() {
               <th className={cx("cart__tableRow__column")}>Sản phẩm</th>
               <th className={cx("cart__tableRow__column")}>Số lượng</th>
               <th className={cx("cart__tableRow__column")}>Kích thước</th>
+              <th className={cx("cart__tableRow__column")}>Topping</th>
               <th className={cx("cart__tableRow__column")}>Đá</th>
               <th className={cx("cart__tableRow__column")}>Ngọt</th>
               <th className={cx("cart__tableRow__column")}>Giá</th>

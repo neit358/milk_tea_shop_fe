@@ -1,5 +1,3 @@
-import classNames from "classnames/bind";
-import style from "./ProductDetail.module.scss";
 import {
   faCaretDown,
   faCaretUp,
@@ -11,11 +9,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState, useRef } from "react";
 import PropTypes from "prop-types";
 
+import classNames from "classnames/bind";
+import style from "./ProductDetail.module.scss";
 import ToastInformation from "~/Components/Notification";
 import { useParams } from "react-router-dom";
 import Image from "../../Components/Image/Image";
 import * as productService from "~/services/product.service";
 import * as cartService from "~/services/cart.service";
+import ProductDetailCollection from "./productDetailCollection";
 
 const cx = classNames.bind(style);
 function ProductDetail({ idProduct }) {
@@ -23,8 +24,9 @@ function ProductDetail({ idProduct }) {
   const [product, setProduct] = useState({});
   const [quantity, setQuantity] = useState(1);
   const [size, setSize] = useState({});
-  const [sweetness, setSweetness] = useState("");
-  const [ice, setIce] = useState("");
+  const [sweetness, setSweetness] = useState({});
+  const [ice, setIce] = useState({});
+  const [topping, setTopping] = useState([]);
   const [content, setContent] = useState("");
   const [title, setTitle] = useState("");
   const { id } = useParams();
@@ -45,14 +47,6 @@ function ProductDetail({ idProduct }) {
     fetchData();
   }, [id, idProduct]);
 
-  const handleIncrease = () => {
-    setQuantity((prevQuantity) => prevQuantity + 1);
-  };
-
-  const handleDecrease = () => {
-    setQuantity((prevQuantity) => (prevQuantity > 1 ? prevQuantity - 1 : 1));
-  };
-
   const handleAddCart = async () => {
     if (!user) {
       setBool(true);
@@ -64,12 +58,22 @@ function ProductDetail({ idProduct }) {
       return;
     }
 
-    const response = await cartService.addCart({
-      idSanPham: product._id,
+    console.log({
+      sanPham: product._id,
       soLuong: quantity,
       thongTinKichThuoc: size,
-      ngot: sweetness,
-      da: ice,
+      thongTinTopping: topping,
+      ngot: sweetness.tenNgot,
+      da: ice.tenDa,
+    });
+
+    const response = await cartService.addCart({
+      sanPham: product._id,
+      soLuong: quantity,
+      thongTinKichThuoc: size,
+      thongTinTopping: topping,
+      ngot: sweetness.tenNgot,
+      da: ice.tenDa,
     });
 
     setBool(true);
@@ -194,13 +198,13 @@ function ProductDetail({ idProduct }) {
                   <button
                     key={index}
                     className={cx(
-                      sweetness === option
+                      sweetness._id === option._id
                         ? "productDetails__child__right__advanced__options__active"
                         : ""
                     )}
                     onClick={() => setSweetness(option)}
                   >
-                    {option}
+                    {option.tenNgot}
                   </button>
                 ))}
               </div>
@@ -219,14 +223,33 @@ function ProductDetail({ idProduct }) {
                   <button
                     key={index}
                     className={cx(
-                      ice === option
+                      ice._id === option._id
                         ? "productDetails__child__right__advanced__options__active"
                         : ""
                     )}
                     onClick={() => setIce(option)}
                   >
-                    {option}
+                    {option.tenDa}
                   </button>
+                ))}
+              </div>
+            </div>
+            <div
+              className={cx("productDetails__child__right__advanced__options")}
+            >
+              <h3>Topping</h3>
+              <div
+                className={cx(
+                  "productDetails__child__right__advanced__options__collection"
+                )}
+              >
+                {product.thongTinTopping?.map((option, index) => (
+                  <ProductDetailCollection
+                    key={index}
+                    option={option}
+                    setTopping={setTopping}
+                    topping={topping}
+                  />
                 ))}
               </div>
             </div>
@@ -249,14 +272,20 @@ function ProductDetail({ idProduct }) {
               >
                 <FontAwesomeIcon
                   icon={faCaretUp}
-                  onClick={handleIncrease}
+                  onClick={() =>
+                    setQuantity((prevQuantity) => prevQuantity + 1)
+                  }
                   className={cx(
                     "productDetails__child__right__advanced__quality__upDown__iconUp"
                   )}
                 />
                 <FontAwesomeIcon
                   icon={faCaretDown}
-                  onClick={handleDecrease}
+                  onClick={() =>
+                    setQuantity((prevQuantity) =>
+                      prevQuantity > 1 ? prevQuantity - 1 : 1
+                    )
+                  }
                   className={cx(
                     "productDetails__child__right__advanced__quality__upDown__iconDown"
                   )}
