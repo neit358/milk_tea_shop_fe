@@ -85,6 +85,15 @@ function CartChild({ cart, reload, setReload }) {
           </div>
         </td>
         <td className={cx("cartChild__column")}>
+          <div className={cx("cartChild__column__content")}>
+            {cart.thongTinTopping.map((topping) => (
+              <div key={topping._id}>
+                {topping.topping.tenTopping} +{topping.giaThem} đ
+              </div>
+            ))}
+          </div>
+        </td>
+        <td className={cx("cartChild__column")}>
           <div className={cx("cartChild__column__content")}>{cart.da}</div>
         </td>
         <td className={cx("cartChild__column")}>

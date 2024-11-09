@@ -70,6 +70,15 @@
 
           &__selection {
             display: flex;
+
+            button {
+              margin-right: 20px;
+              padding: 12px 20px;
+              border: none;
+              cursor: pointer;
+              background: #f2f2f2;
+              border-radius: 4px;
+            }
           }
 
           &__size {
@@ -87,15 +96,6 @@
           h3 {
             margin-bottom: 8px;
             font-size: 16px;
-          }
-
-          button {
-            margin-right: 20px;
-            padding: 12px 20px;
-            border: none;
-            cursor: pointer;
-            background: #f2f2f2;
-            border-radius: 4px;
           }
 
           &__active {
