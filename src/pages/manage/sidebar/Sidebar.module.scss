@@ -1,0 +1,19 @@
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  background-color: #f4f4f9;
+  width: 250px;
+  height: 100vh;
+  padding: 20px;
+  border-right: 1px solid #ddd;
+  gap: 10px;
+
+  &__title {
+    padding: 15px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #2c3e50;
+    border-bottom: 2px solid var(--primary-color);
+    margin-bottom: 10px;
+  }
+}

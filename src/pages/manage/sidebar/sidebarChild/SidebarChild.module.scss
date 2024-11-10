@@ -1,0 +1,12 @@
+.sidebarChild {
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  color: #333;
+
+  &:hover {
+    background-color: var(--primary-color);
+    color: #000;
+  }
+}

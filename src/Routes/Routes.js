@@ -5,6 +5,7 @@ import { LoginPage, RegisterPage } from "../pages/auth";
 import Home from "../pages/home";
 import ProductDetail from "../pages/productDetail/ProductDetail";
 import Cart from "~/pages/cart";
+import Manage from "~/pages/manage";
 
 const configRoutes = [
   {
@@ -36,6 +37,12 @@ const configRoutes = [
     component: Cart,
     layout: LayoutOnlyHeaderAndFooter,
     name: "cart",
+  },
+  {
+    path: config.routes.manage,
+    component: Manage,
+    layout: null,
+    name: "manage",
   },
 ];
 

@@ -1,0 +1,134 @@
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  overflow: hidden;
+
+  &__content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    width: 600px;
+    max-width: 90%;
+    max-height: 90%;
+    overflow-y: auto;
+    position: relative;
+
+    &::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 10px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: #888;
+      border-radius: 10px;
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+      background: #555;
+    }
+
+    &__form {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+
+      &__image {
+        padding: 10px;
+        width: 100%;
+        object-fit: contain;
+        object-position: center;
+      }
+
+      label {
+        display: flex;
+        flex-direction: column;
+        & > div {
+          width: 100%;
+          margin-top: 5px;
+        }
+        input,
+        select,
+        textarea {
+          width: 100%;
+          padding: 8px;
+          margin-top: 5px;
+          border: 1px solid #ccc;
+          border-radius: 5px;
+        }
+
+        textarea {
+          resize: vertical;
+        }
+      }
+
+      &__option {
+        display: flex;
+        align-items: center;
+        margin-top: 5px;
+        gap: 10px;
+
+        & > div {
+          flex: 2;
+        }
+
+        input {
+          flex: 1;
+          margin: 0 !important;
+        }
+
+        button {
+          margin: 0 !important;
+        }
+      }
+
+      button[type="button"] {
+        margin-top: 10px;
+        padding: 10px 20px;
+        background-color: var(--primary-color);
+        color: #000;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+
+        &:hover {
+          background-color: var(--red-color);
+        }
+      }
+
+      button[type="submit"] {
+        padding: 10px 20px;
+        background-color: var(--primary-color);
+        color: #000;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+
+        &:hover {
+          background-color: var(--red-color);
+        }
+      }
+
+      &--full-width {
+        grid-column: span 2;
+      }
+
+      &--center-button {
+        justify-self: center;
+      }
+    }
+  }
+}
