@@ -38,7 +38,7 @@ function HomeChild({ sanPham }) {
   return (
     <>
       <NavLink to={`/chi_tiet_san_pham/${sanPham._id}`}>
-        <li className={cx("homeChild", "grid__column-10-3")}>
+        <li className={cx("homeChild", "grid__column__10--3")}>
           <div className={cx("homeChild__child")}>
             <div className={cx("homeChild__child__type")}></div>
             <div className={cx("homeChild__child__name")}>

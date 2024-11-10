@@ -94,7 +94,7 @@ function Home({ search = {}, category = {} }) {
 
   return (
     <>
-      <div className={cx("home", "grid__column-10")}>
+      <div className={cx("home", "grid__column__10")}>
         <div className={cx("home__child")}>
           <div className={cx("home__child")}>
             <div className={cx("home__child__recommend")}>

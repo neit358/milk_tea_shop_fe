@@ -90,12 +90,14 @@ function ProductDetail({ idProduct }) {
   return (
     <div
       className={cx("productDetails", {
-        "grid__column-10": id,
-        "grid__column-12": !id,
+        grid__column__10: id,
+        grid__column__12: !id,
       })}
     >
       <div className={cx("productDetails__child", "grid__row")}>
-        <div className={cx("productDetails__child__left", "grid__column-10-4")}>
+        <div
+          className={cx("productDetails__child__left", "grid__column__10--4")}
+        >
           <div className={cx("productDetails__child__left__img")}>
             {product.hinhAnh ? (
               <Image
@@ -115,7 +117,7 @@ function ProductDetail({ idProduct }) {
           </div>
         </div>
         <div
-          className={cx("productDetails__child__right", "grid__column-10-6")}
+          className={cx("productDetails__child__right", "grid__column__10--6")}
         >
           <div className={cx("productDetails__child__right__base")}>
             <div className={cx("productDetails__child__right__base__name")}>

@@ -72,14 +72,14 @@ function Cart() {
                 ))
               ) : (
                 <tr>
-                  <td className={cx("cart__table--noData")} colSpan="8">
+                  <td className={cx("cart__table--noData")} colSpan="9">
                     Không có dữ liệu
                   </td>
                 </tr>
               )
             ) : (
               <tr>
-                <td className={cx("cart__table--noData")} colSpan="8">
+                <td className={cx("cart__table--noData")} colSpan="9">
                   Hãy <a href="./account?type=register">đăng ký</a> hoặc{" "}
                   <a href="./account?type=login">đăng nhập</a> tài khoản để có
                   thể xem danh sách yêu thích

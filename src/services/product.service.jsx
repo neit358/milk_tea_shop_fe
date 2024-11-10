@@ -46,3 +46,36 @@ export const filterProducts = async (
     };
   }
 };
+
+export const updateProduct = async (id, data) => {
+  try {
+    const res = await httpRequest.patch(`${product}/${id}`, data);
+    return res;
+  } catch (err) {
+    return {
+      data: err.response.data,
+    };
+  }
+};
+
+export const createProduct = async (data) => {
+  try {
+    const res = await httpRequest.post(`${product}`, data);
+    return res;
+  } catch (err) {
+    return {
+      data: err.response.data,
+    };
+  }
+};
+
+export const deleteProduct = async (id) => {
+  try {
+    const res = await httpRequest.del(`${product}/${id}`);
+    return res;
+  } catch (err) {
+    return {
+      data: err.response.data,
+    };
+  }
+};

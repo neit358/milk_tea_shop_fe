@@ -6,6 +6,7 @@ const routes = {
   wishlist: "/yeu_thich",
   account: "/tai_khoan",
   cart: "/gio_hang",
+  manage: "/quan_ly",
 };
 
 export default routes;
