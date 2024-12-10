@@ -1,8 +1,9 @@
-.sidebarType {
+.sidebarChild {
   line-height: 2.2rem;
   padding: 5px 0;
   border-bottom: 1px solid #ddd;
   cursor: pointer;
+  margin-left: 10px;
 
   &__parent {
     display: flex;
@@ -18,9 +19,6 @@
     &__icon--child {
       width: 14px;
       height: 14px;
-    }
-
-    &__quality {
     }
   }
 }

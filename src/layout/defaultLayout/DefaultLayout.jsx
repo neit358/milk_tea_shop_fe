@@ -15,7 +15,11 @@ function DefaultLayout({ children }) {
 
   return (
     <div className={cx("container")}>
-      <Header setSearch={setSearch} />
+      <Header
+        setSearch={setSearch}
+        setCategory={setCategory}
+        category={category}
+      />
       <div className={cx("body")}>
         <div className={cx("body__path")}>
           <Path />
@@ -23,7 +27,7 @@ function DefaultLayout({ children }) {
         <div className={cx("body__content")}>
           <div className={cx("wrapper")}>
             <div className={cx("grid__row")}>
-              <SideBar setCategory={setCategory} />
+              <SideBar setCategory={setCategory} category={category} />
               {React.Children.map(children, (child) =>
                 cloneElement(child, { search, category })
               )}

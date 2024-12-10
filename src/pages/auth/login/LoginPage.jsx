@@ -6,7 +6,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 
 import styles from "./LoginPage.module.scss";
 import ToastInformation from "~/Components/Notification/Notification";
-import * as authServices from "~/services/auth.service";
+import * as authService from "~/services/auth.service";
 import LoadingComponent from "~/Components/Loading";
 
 const cx = classNames.bind(styles);
@@ -23,23 +23,25 @@ function LoginPage() {
   const handleSubmitLogin = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    const response = await authServices.login({
+    const response = await authService.login({
       sdt: username,
       matKhau: password,
     });
-    setIsLoading(false);
     setBool(true);
     setContent(response.data.message);
-    if (response.data.success) {
-      localStorage.setItem("user", JSON.stringify(response.data.result));
-      document.cookie = `user=${JSON.stringify(response.data.result)}; path=/`;
-      setTitle("Success");
-      setTimeout(() => {
-        navigate("/");
-      }, 3000);
-    } else {
+    if (!response.data.success) {
       setTitle("Error");
+      setIsLoading(false);
+      return;
     }
+    const user = response.data.result;
+
+    localStorage.setItem("user", JSON.stringify(user));
+    setTitle("Success");
+    setTimeout(() => {
+      user.vaiTro.vaiTro === "GUEST" ? navigate("/") : navigate("/quan_ly");
+      setIsLoading(false);
+    }, 3000);
   };
 
   const handleOnClickExit = () => {};

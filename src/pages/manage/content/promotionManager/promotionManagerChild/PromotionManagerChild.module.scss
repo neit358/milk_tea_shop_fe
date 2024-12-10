@@ -1,0 +1,232 @@
+@mixin icon_model {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px !important;
+  height: 30px !important;
+  background-color: var(--primary-color);
+  color: #fff;
+  padding: 5px;
+  border-radius: 5px;
+  font-size: 20px;
+
+  &:hover {
+    background-color: var(--red-color);
+  }
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  overflow: hidden;
+
+  &__content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    width: 600px;
+    max-width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+
+    &::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 10px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: #888;
+      border-radius: 10px;
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+      background: #555;
+    }
+
+    &__form {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+
+      &__changePromotion {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        &__edit {
+          cursor: pointer;
+          color: rgb(1, 26, 255);
+        }
+      }
+
+      &__image {
+        padding: 10px;
+        width: 100%;
+        object-fit: contain;
+        object-position: center;
+      }
+
+      span,
+      label {
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        & > div {
+          width: 100%;
+          margin-top: 5px;
+        }
+        input,
+        select,
+        textarea {
+          width: 100%;
+          padding: 8px;
+          margin-top: 5px;
+          border: 1px solid #ccc;
+          border-radius: 5px;
+        }
+
+        input {
+          padding: 10px;
+        }
+
+        textarea {
+          resize: vertical;
+        }
+      }
+
+      &__option {
+        display: flex;
+        align-items: center;
+        margin-top: 5px;
+        gap: 10px;
+
+        & > div {
+          flex: 2;
+        }
+
+        input {
+          flex: 1;
+          margin: 0 !important;
+        }
+
+        &__delete {
+          flex: none !important;
+          @include icon_model;
+        }
+      }
+
+      &__add {
+        @include icon_model;
+      }
+
+      button[type="button"] {
+        padding: 10px 20px;
+        background-color: var(--primary-color);
+        color: #000;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+
+        &:hover {
+          background-color: var(--red-color);
+        }
+      }
+
+      button[type="submit"] {
+        padding: 10px 20px;
+        background-color: var(--primary-color);
+        color: #000;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+
+        &:hover {
+          background-color: var(--red-color);
+        }
+      }
+
+      &--full-width {
+        grid-column: span 2;
+      }
+
+      &--center-button {
+        justify-self: center;
+      }
+
+      &__group {
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+
+        &__label,
+        &__message {
+          text-align: left;
+        }
+
+        &__label {
+          font-weight: 700;
+          padding-bottom: 6px;
+          line-height: 1.8rem;
+          font-size: 1.4rem;
+        }
+
+        &__control {
+          height: 40px;
+          padding: 8px 12px;
+          border: 1px solid #b3b3b3;
+          border-radius: 5px;
+          outline: none;
+          font-size: 1.4rem;
+          margin-top: 5px;
+
+          &:hover {
+            border-color: var(--primary-color);
+          }
+        }
+
+        &.invalid &__control {
+          border-color: #f33a58;
+        }
+
+        &.invalid &__message {
+          color: #f33a58;
+        }
+
+        &__message {
+          font-size: 1.2rem;
+          line-height: 1.6rem;
+          padding: 4px 0 0;
+          height: 1.6rem;
+        }
+
+        &__control {
+          &--select {
+            padding: 0;
+            border: none;
+            border-radius: 3px;
+            outline: none;
+
+            &:hover {
+              border: none;
+            }
+          }
+        }
+      }
+    }
+  }
+}

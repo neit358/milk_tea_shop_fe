@@ -8,18 +8,20 @@ import PropTypes from "prop-types";
 
 const cx = classNames.bind(styles);
 
-function Header({ setSearch }) {
+function Header({ setSearch, setCategory, category }) {
   return (
     <div className={cx("header")}>
       <HeaderTop />
       <HeaderBody setSearch={setSearch} />
-      <HeaderFooter />
+      <HeaderFooter setCategory={setCategory} category={category} />
     </div>
   );
 }
 
 Header.propTypes = {
   setSearch: PropTypes.func,
+  setCategory: PropTypes.func,
+  category: PropTypes.object,
 };
 
 export default Header;

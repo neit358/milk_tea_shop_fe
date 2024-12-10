@@ -7,6 +7,7 @@ const routes = {
   account: "/tai_khoan",
   cart: "/gio_hang",
   manage: "/quan_ly",
+  order: "/don_mua",
 };
 
 export default routes;

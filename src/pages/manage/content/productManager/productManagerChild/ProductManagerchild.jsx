@@ -7,15 +7,17 @@ import ToastInformation from "~/Components/Notification";
 import LoadingComponent from "~/Components/Loading";
 import { useEffect, useState } from "react";
 import * as productService from "~/services/product.service";
-import * as typeService from "~/services/type.service";
+import * as categoryService from "~/services/category.service";
 import * as iceService from "~/services/ice.service";
 import * as sweetService from "~/services/sweet.service";
 import * as branchService from "~/services/branch.service";
 import * as toppingService from "~/services/topping.service";
 import * as sizeService from "~/services/size.service";
 import * as uploadService from "~/services/upload.service";
+import * as teaService from "~/services/tea.service";
 
 import Image from "~/Components/Image";
+import { customStyles } from "~/shared/services/style.service";
 
 const cx = classNames.bind(styles);
 
@@ -31,6 +33,7 @@ function ProductManagerChild({ idProductEdit, setShowModel }) {
   const [image, setImage] = useState("");
   const [status, setStatus] = useState([]);
   const [recommend, setRecommend] = useState([]);
+  const [listOfTea, setListOfTea] = useState([]);
   const [listOfSize, setListOfSize] = useState([]);
   const [listOfType, setListOfType] = useState([]);
   const [listOfSweetness, setListOfSweetness] = useState([]);
@@ -44,7 +47,9 @@ function ProductManagerChild({ idProductEdit, setShowModel }) {
   const [branchs, setBranchs] = useState([]);
   const [toppings, setToppings] = useState([]);
   const [selectedFile, setSelectedFile] = useState(null);
+  const [teas, setTeas] = useState([]);
   const [URLImage, setURLImage] = useState("");
+  const [invalid, setInvalid] = useState(false);
 
   const listStatus = [
     { value: true, label: "Hoạt động" },
@@ -59,12 +64,13 @@ function ProductManagerChild({ idProductEdit, setShowModel }) {
   useEffect(() => {
     const fetchAPI = async () => {
       setIsLoading(true);
-      const listTypeFound = await typeService.getTypes();
+      const listTypeFound = await categoryService.getCategories();
       const listIceFound = await iceService.getIces();
       const listSweetnessFound = await sweetService.getSweets();
       const listBranchFound = await branchService.getBranchs();
       const listToppingFound = await toppingService.getToppings();
       const listSizeFound = await sizeService.getSizes();
+      const listTeaFound = await teaService.getTeas();
       if (idProductEdit) {
         const productFound = await productService.getProduct(idProductEdit);
         if (!productFound.data.success) {
@@ -116,7 +122,18 @@ function ProductManagerChild({ idProductEdit, setShowModel }) {
             label: chiNhanh.tenChiNhanh,
           }))
         );
-        setToppings(productFound.data.result.thongTinTopping);
+        setToppings(
+          productFound.data.result.thongTinTopping.map((topping) => ({
+            value: topping._id,
+            label: topping.tenTopping,
+          }))
+        );
+        setTeas(
+          productFound.data.result.tra.map((tea) => ({
+            value: tea._id,
+            label: tea.tenTra,
+          }))
+        );
       }
       setIsLoading(false);
 
@@ -161,6 +178,13 @@ function ProductManagerChild({ idProductEdit, setShowModel }) {
           label: size.tenKichThuoc,
         }))
       );
+
+      setListOfTea(
+        listTeaFound.data.result?.map((tea) => ({
+          value: tea._id,
+          label: tea.tenTra,
+        }))
+      );
     };
     fetchAPI();
   }, []);
@@ -171,8 +195,8 @@ function ProductManagerChild({ idProductEdit, setShowModel }) {
 
   const handleSizeChange = (index, selectedSize) => {
     const newSizes = [...sizes];
-    newSizes[index].kichThuoc._id = selectedSize.value;
-    newSizes[index].kichThuoc.tenKichThuoc = selectedSize.label;
+    newSizes[index].kichThuoc._id = selectedSize?.value || "";
+    newSizes[index].kichThuoc.tenKichThuoc = selectedSize?.label || "";
     setSizes(newSizes);
   };
 
@@ -183,43 +207,47 @@ function ProductManagerChild({ idProductEdit, setShowModel }) {
   };
 
   const handleAddSize = () => {
-    setSizes([...sizes, { kichThuoc: "", giaThem: 0 }]);
+    setSizes([
+      ...sizes,
+      { kichThuoc: { _id: "", tenKichThuoc: "" }, giaThem: "0" },
+    ]);
   };
 
-  const handleRemoveSize = (index) => {
+  const handleRemoveSize = (index, event) => {
+    event.preventDefault();
     const newSizes = sizes.filter((_, i) => i !== index);
     setSizes(newSizes);
-  };
-
-  const handleToppingChange = (index, selectedTopping) => {
-    const newToppings = [...toppings];
-    newToppings[index].topping._id = selectedTopping.value;
-    newToppings[index].topping.tenTopping = selectedTopping.label;
-    setToppings(newToppings);
-  };
-
-  const handlePriceToppingChange = (index, event) => {
-    const newToppings = [...toppings];
-    newToppings[index].giaThem = event.target.value;
-    setToppings(newToppings);
-  };
-
-  const handleAddTopping = () => {
-    setToppings([...toppings, { topping: "", giaThem: 0 }]);
-  };
-
-  const handleRemoveTopping = (index) => {
-    const newToppings = toppings.filter((_, i) => i !== index);
-    setToppings(newToppings);
   };
 
   const handleClickSubmit = async (e) => {
     e.preventDefault();
 
     if (!user) {
-      setContent("Vui lòng đăng nhập chỉnh sửa!");
+      setContent(
+        `Vui lòng đăng nhập để ${idProductEdit ? "chỉnh sửa" : "thêm"}!`
+      );
       setTitle("Warn");
       setBool(true);
+      return;
+    }
+
+    const invalidSize =
+      sizes.length > 0 &&
+      sizes.some(
+        (size) => !size.kichThuoc.tenKichThuoc || !size.giaThem.toString()
+      );
+
+    if (
+      !name ||
+      !price.toString() ||
+      !type ||
+      (idProductEdit && !status) ||
+      invalidSize
+    ) {
+      setBool(true);
+      setTitle("Warn");
+      setContent("Vui lòng điền đầy đủ thông tin!");
+      setInvalid(true);
       return;
     }
 
@@ -241,31 +269,28 @@ function ProductManagerChild({ idProductEdit, setShowModel }) {
       }
     }
 
-    const productUpdate = {
+    const bodyRequest = {
       tenSanPham: name,
-      gia: price,
+      gia: price || 0,
       moTa: description,
       hinhAnh: imageUrl,
       trangThai: status?.value,
       deXuat: recommend?.value,
       loaiSanPham: type.value,
       thongTinKichThuoc: sizes.map((size) => ({
-        kichThuoc: size.kichThuoc._id,
-        giaThem: size.giaThem,
+        kichThuoc: size?.kichThuoc?._id,
+        giaThem: size.giaThem || 0,
       })),
-      thongTinTopping: toppings.map((topping) => ({
-        topping: topping.topping._id,
-        giaThem: topping.giaThem,
-      })),
-      ngot: sweetness.map((sweet) => sweet.value),
-      da: ices.map((ice) => ice.value),
-      chiNhanhApDung: branchs.map((branch) => branch.value),
+      thongTinTopping: toppings.map((topping) => topping?.value),
+      ngot: sweetness.map((sweet) => sweet?.value),
+      da: ices.map((ice) => ice?.value),
+      tra: teas.map((tea) => tea?.value),
+      chiNhanhApDung: branchs.map((branch) => branch?.value),
     };
 
-    const responseUpdate = await productService.updateProduct(
-      idProductEdit,
-      productUpdate
-    );
+    const responseUpdate = idProductEdit
+      ? await productService.updateProduct(idProductEdit, bodyRequest)
+      : await productService.createProduct(bodyRequest);
 
     setContent(responseUpdate.data.message);
     setBool(true);
@@ -274,7 +299,6 @@ function ProductManagerChild({ idProductEdit, setShowModel }) {
       setTimeout(() => {
         setIsLoading(false);
         setShowModel(false);
-        window.location.reload();
       }, 3000);
     } else {
       setTitle("Error");
@@ -288,109 +312,333 @@ function ProductManagerChild({ idProductEdit, setShowModel }) {
         <div className={cx("modal__content")} onClick={handleClickForm}>
           <form className={cx("modal__content__form")}>
             <label>
-              Tên sản phẩm:
-              <input
-                type="text"
-                name="name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              />
-            </label>
-            <label>
-              Giá:
-              <input
-                type="number"
-                name="price"
-                value={price}
-                onChange={(e) => setPrice(e.target.value)}
-              />
-            </label>
-            <label>
-              Mô tả:
-              <textarea
-                name="description"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-              />
-            </label>
-            <label>
-              Trạng thái:
-              <Select
-                value={status}
-                onChange={(selectedStatus) => setStatus(selectedStatus)}
-                name="status"
-                isClearable
-                options={listStatus}
-              />
-            </label>
+              <div
+                className={cx(
+                  "modal__content__form__group",
+                  `${!name && invalid ? "invalid" : ""}`
+                )}
+              >
+                <label
+                  htmlFor="name"
+                  className={cx("modal__content__form__group__label")}
+                >
+                  Tên sản phẩm:
+                </label>
+                <input
+                  value={name || ""}
+                  type="text"
+                  name="name"
+                  placeholder="Nhập tên sản phẩm"
+                  className={cx("modal__content__form__group__control")}
+                  onChange={(e) => setName(e.target.value)}
+                />
 
-            <label>
-              Đề xuất:
-              <Select
-                value={recommend}
-                onChange={(selectedRecommend) =>
-                  setRecommend(selectedRecommend)
-                }
-                name="Recommend"
-                isClearable
-                options={listRecommend}
-              />
+                <span className={cx("modal__content__form__group__message")}>
+                  {invalid && !name ? "Tên sản phẩm không được để trống!" : ""}
+                </span>
+              </div>
             </label>
             <label>
-              Loại sản phẩm:
-              {listOfType?.length > 0 && (
-                <Select
-                  value={type}
-                  onChange={(selectedType) => setType(selectedType)}
-                  name="type"
-                  isClearable
-                  options={listOfType}
+              <div
+                className={cx(
+                  "modal__content__form__group",
+                  `${!price.toString() && invalid ? "invalid" : ""}`
+                )}
+              >
+                <label
+                  htmlFor="price"
+                  className={cx("modal__content__form__group__label")}
+                >
+                  Giá:
+                </label>
+                <input
+                  value={price}
+                  type="number"
+                  name="price"
+                  placeholder="Nhập giá sản phẩm"
+                  className={cx("modal__content__form__group__control")}
+                  onChange={(e) => setPrice(e.target.value)}
                 />
-              )}
+
+                <span className={cx("modal__content__form__group__message")}>
+                  {invalid && !price.toString()
+                    ? "Giá không được để trống!"
+                    : ""}
+                </span>
+              </div>
             </label>
             <label>
-              Đá:
-              {listOfIce?.length > 0 && (
-                <Select
-                  isMulti
-                  value={ices}
-                  onChange={(selectedIces) => setIces(selectedIces)}
-                  name="ice"
-                  isClearable
-                  options={listOfIce}
+              <div className={cx("modal__content__form__group")}>
+                <label
+                  htmlFor="description"
+                  className={cx("modal__content__form__group__label")}
+                >
+                  Mô tả:
+                </label>
+                <textarea
+                  value={description}
+                  type="text"
+                  name="description"
+                  placeholder="Nhập giá mô tả sản phẩm"
+                  className={cx("modal__content__form__group__control")}
+                  onChange={(e) => setDescription(e.target.value)}
                 />
-              )}
+
+                <span className={cx("modal__content__form__group__message")}>
+                  {""}
+                </span>
+              </div>
             </label>
+            {idProductEdit && (
+              <label>
+                <div
+                  className={cx(
+                    "modal__content__form__group",
+                    `${!status && invalid ? "invalid" : ""}`
+                  )}
+                >
+                  <label
+                    htmlFor="status"
+                    className={cx("modal__content__form__group__label")}
+                  >
+                    Trạng thái:
+                  </label>
+                  <Select
+                    value={status}
+                    name="status"
+                    isClearable
+                    styles={customStyles(status, invalid)}
+                    options={listStatus}
+                    onChange={(selectedStatus) => setStatus(selectedStatus)}
+                    className={cx(
+                      "modal__content__form__group__control",
+                      "modal__content__form__group__control--select"
+                    )}
+                  />
+                  <span className={cx("modal__content__form__group__message")}>
+                    {invalid && !status
+                      ? "Trạng thái không được để trống!"
+                      : ""}
+                  </span>
+                </div>
+              </label>
+            )}
             <label>
-              Ngọt:
-              {listOfSweetness?.length > 0 && (
+              <div className={cx("modal__content__form__group")}>
+                <label
+                  htmlFor="recommend"
+                  className={cx("modal__content__form__group__label")}
+                >
+                  Đề xuất:
+                </label>
                 <Select
-                  isMulti
-                  value={sweetness}
-                  onChange={(selectedSweetness) =>
-                    setSweetness(selectedSweetness)
+                  value={recommend}
+                  name="recommend"
+                  isClearable
+                  styles={customStyles(recommend, invalid)}
+                  options={listRecommend}
+                  onChange={(selectedRecommend) =>
+                    setRecommend(selectedRecommend)
                   }
-                  name="sweetness"
-                  isClearable
-                  options={listOfSweetness}
+                  className={cx(
+                    "modal__content__form__group__control",
+                    "modal__content__form__group__control--select"
+                  )}
                 />
-              )}
+                <span className={cx("modal__content__form__group__message")}>
+                  {""}
+                </span>
+              </div>
             </label>
             <label>
-              Chi nhánh áp dụng:
-              {listOfBranch?.length > 0 && (
-                <Select
-                  isMulti
-                  value={branchs}
-                  onChange={(selectedBranchs) => setBranchs(selectedBranchs)}
-                  name="branchs"
-                  isClearable
-                  options={listOfBranch}
-                />
-              )}
+              <div
+                className={cx(
+                  "modal__content__form__group",
+                  `${!type && invalid ? "invalid" : ""}`
+                )}
+              >
+                <label
+                  htmlFor="type"
+                  className={cx("modal__content__form__group__label")}
+                >
+                  Loại sản phẩm:
+                </label>
+                {listOfType?.length > 0 && (
+                  <Select
+                    value={type}
+                    name="type"
+                    isClearable
+                    styles={customStyles(type, invalid)}
+                    options={listOfType}
+                    onChange={(selectedType) => setType(selectedType)}
+                    className={cx(
+                      "modal__content__form__group__control",
+                      "modal__content__form__group__control--select"
+                    )}
+                  />
+                )}
+                <span className={cx("modal__content__form__group__message")}>
+                  {invalid && !type ? "Loại sản phẩm không được để trống!" : ""}
+                </span>
+              </div>
             </label>
-            <label className={cx("modal__content__form--full-width")}>
-              Kích thước:
+            <label>
+              <div className={cx("modal__content__form__group")}>
+                <label
+                  htmlFor="ice"
+                  className={cx("modal__content__form__group__label")}
+                >
+                  Đá:
+                </label>
+                {listOfIce?.length > 0 && (
+                  <Select
+                    isMulti
+                    value={ices}
+                    name="ice"
+                    isClearable
+                    styles={customStyles(ices, invalid)}
+                    options={listOfIce}
+                    onChange={(selectedIces) => setIces(selectedIces)}
+                    className={cx(
+                      "modal__content__form__group__control",
+                      "modal__content__form__group__control--select"
+                    )}
+                  />
+                )}
+                <span className={cx("modal__content__form__group__message")}>
+                  {""}
+                </span>
+              </div>
+            </label>
+            <label>
+              <div className={cx("modal__content__form__group")}>
+                <label
+                  htmlFor="sweetness"
+                  className={cx("modal__content__form__group__label")}
+                >
+                  Ngọt:
+                </label>
+                {listOfSweetness?.length > 0 && (
+                  <Select
+                    isMulti
+                    value={sweetness}
+                    name="sweetness"
+                    isClearable
+                    styles={customStyles(sweetness, invalid)}
+                    options={listOfSweetness}
+                    onChange={(selectedSweetness) =>
+                      setSweetness(selectedSweetness)
+                    }
+                    className={cx(
+                      "modal__content__form__group__control",
+                      "modal__content__form__group__control--select"
+                    )}
+                  />
+                )}
+                <span className={cx("modal__content__form__group__message")}>
+                  {""}
+                </span>
+              </div>
+            </label>
+            <label>
+              <div className={cx("modal__content__form__group")}>
+                <label
+                  htmlFor="tea"
+                  className={cx("modal__content__form__group__label")}
+                >
+                  Trà:
+                </label>
+                {listOfTea?.length > 0 && (
+                  <Select
+                    isMulti
+                    value={teas}
+                    name="tea"
+                    isClearable
+                    styles={customStyles(teas, invalid)}
+                    options={listOfTea}
+                    onChange={(selectedTeas) => setTeas(selectedTeas)}
+                    className={cx(
+                      "modal__content__form__group__control",
+                      "modal__content__form__group__control--select"
+                    )}
+                  />
+                )}
+                <span className={cx("modal__content__form__group__message")}>
+                  {""}
+                </span>
+              </div>
+            </label>
+            <label>
+              <div className={cx("modal__content__form__group")}>
+                <label
+                  htmlFor="branch"
+                  className={cx("modal__content__form__group__label")}
+                >
+                  Chi nhánh áp dụng:
+                </label>
+                {listOfBranch?.length > 0 && (
+                  <Select
+                    isMulti
+                    value={branchs}
+                    name="branch"
+                    isClearable
+                    styles={customStyles(branchs, invalid)}
+                    options={listOfBranch}
+                    onChange={(selectedBranches) =>
+                      setBranchs(selectedBranches)
+                    }
+                    className={cx(
+                      "modal__content__form__group__control",
+                      "modal__content__form__group__control--select"
+                    )}
+                  />
+                )}
+                <span className={cx("modal__content__form__group__message")}>
+                  {""}
+                </span>
+              </div>
+            </label>
+            <label
+              className={cx(
+                `${idProductEdit ? "modal__content__form--full-width" : ""}`
+              )}
+            >
+              <div className={cx("modal__content__form__group")}>
+                <label
+                  htmlFor="topping"
+                  className={cx("modal__content__form__group__label")}
+                >
+                  Topping:
+                </label>
+                {listOfTopping?.length > 0 && (
+                  <Select
+                    isMulti
+                    value={toppings}
+                    name="toppings"
+                    isClearable
+                    styles={customStyles(toppings, invalid)}
+                    options={listOfTopping}
+                    onChange={(selectedToppings) =>
+                      setToppings(selectedToppings)
+                    }
+                    className={cx(
+                      "modal__content__form__group__control",
+                      "modal__content__form__group__control--select"
+                    )}
+                  />
+                )}
+                <span className={cx("modal__content__form__group__message")}>
+                  {""}
+                </span>
+              </div>
+            </label>
+            <span className={cx("modal__content__form--full-width")}>
+              <label
+                htmlFor="size"
+                className={cx("modal__content__form__group__label")}
+              >
+                Kích thước:
+              </label>
               {sizes?.map((size, index) => {
                 return (
                   <div
@@ -398,83 +646,107 @@ function ProductManagerChild({ idProductEdit, setShowModel }) {
                     className={cx("modal__content__form__option")}
                   >
                     {listOfSize?.length > 0 && (
-                      <Select
-                        value={{
-                          value: size.kichThuoc._id,
-                          label: size.kichThuoc.tenKichThuoc,
-                        }}
-                        onChange={(selectedSize) =>
-                          handleSizeChange(index, selectedSize)
-                        }
-                        name="size"
-                        isClearable
-                        options={listOfSize}
-                      />
+                      <div className={cx("modal__content__form__option__size")}>
+                        <div
+                          className={cx(
+                            "modal__content__form__group",
+                            `${
+                              !size.kichThuoc.tenKichThuoc && invalid
+                                ? "invalid"
+                                : ""
+                            }`
+                          )}
+                        >
+                          <Select
+                            value={{
+                              value: size.kichThuoc._id,
+                              label: size.kichThuoc.tenKichThuoc,
+                            }}
+                            onChange={(selectedSize) =>
+                              handleSizeChange(index, selectedSize)
+                            }
+                            name="size"
+                            isClearable
+                            options={listOfSize}
+                            styles={customStyles(
+                              size.kichThuoc.tenKichThuoc,
+                              invalid
+                            )}
+                            className={cx(
+                              "modal__content__form__group__control",
+                              "modal__content__form__group__control--select"
+                            )}
+                          />
+                          <span
+                            className={cx(
+                              "modal__content__form__group__message"
+                            )}
+                          >
+                            {invalid && !size.kichThuoc.tenKichThuoc
+                              ? "Kích thước không được để trống!"
+                              : ""}
+                          </span>
+                        </div>
+                      </div>
                     )}
-                    <input
-                      type="text"
-                      value={size.giaThem}
-                      onChange={(event) => handlePriceChange(index, event)}
-                    />
-                    <button
-                      type="button"
-                      onClick={() => handleRemoveSize(index)}
+                    <div className={cx("modal__content__form__option__size")}>
+                      <div
+                        className={cx(
+                          "modal__content__form__group",
+                          `${
+                            !size.giaThem.toString() && invalid ? "invalid" : ""
+                          }`
+                        )}
+                      >
+                        <input
+                          name="price"
+                          placeholder="Nhập giá thêm"
+                          className={cx("modal__content__form__group__control")}
+                          type="number"
+                          value={size.giaThem}
+                          onChange={(event) => handlePriceChange(index, event)}
+                        />
+                        <span
+                          className={cx("modal__content__form__group__message")}
+                        >
+                          {invalid && !size.giaThem.toString()
+                            ? "Giá không được để trống!"
+                            : ""}
+                        </span>
+                      </div>
+                    </div>
+                    <div
+                      className={cx("modal__content__form__option__delete")}
+                      onClick={(event) => handleRemoveSize(index, event)}
                     >
                       Xóa
-                    </button>
+                    </div>
                   </div>
                 );
               })}
-              <button type="button" onClick={handleAddSize}>
-                Thêm Kích Thước
-              </button>
-            </label>
-            <label className={cx("modal__content__form--full-width")}>
-              Topping:
-              {toppings?.map((topping, index) => {
-                return (
-                  <div
-                    key={index}
-                    className={cx("modal__content__form__option")}
-                  >
-                    {listOfTopping?.length > 0 && (
-                      <Select
-                        value={{
-                          value: topping.topping._id,
-                          label: topping.topping.tenTopping,
-                        }}
-                        onChange={(selectedTopping) =>
-                          handleToppingChange(index, selectedTopping)
-                        }
-                        name="topping"
-                        isClearable
-                        options={listOfTopping}
-                      />
-                    )}
-                    <input
-                      type="text"
-                      value={topping.giaThem}
-                      onChange={(event) =>
-                        handlePriceToppingChange(index, event)
-                      }
-                    />
-                    <button
-                      type="button"
-                      onClick={() => handleRemoveTopping(index)}
-                    >
-                      Xóa
-                    </button>
-                  </div>
-                );
-              })}
-              <button type="button" onClick={handleAddTopping}>
-                Thêm Topping
-              </button>
-            </label>
+              <div
+                className={cx("modal__content__form__add")}
+                onClick={handleAddSize}
+              >
+                Thêm
+              </div>
+            </span>
             <label>
-              Hình ảnh:
-              <div className={cx("modal__content__form__uploadImage")}>
+              <div
+                className={cx(
+                  "modal__content__form__group",
+                  "modal__content__form__uploadImage"
+                )}
+              >
+                <label
+                  htmlFor="branch"
+                  className={cx("modal__content__form__group__label")}
+                >
+                  Hình ảnh:
+                </label>
+
                 <input
+                  className={cx("modal__content__form__group__control")}
                   type="file"
                   name="image"
                   onChange={(e) => {
@@ -488,14 +760,18 @@ function ProductManagerChild({ idProductEdit, setShowModel }) {
                 {URLImage && (
                   <button
                     type="button"
-                    onClick={() => {
+                    onClick={(e) => {
+                      e.preventDefault();
                       setURLImage("");
                       setSelectedFile(null);
                     }}
                   >
-                    Xóa
+                    Xóa ảnh
                   </button>
                 )}
+                <span className={cx("modal__content__form__group__message")}>
+                  {""}
+                </span>
               </div>
               <Image
                 src={URLImage || image || "https://placehold.co/600x400"}
@@ -511,7 +787,7 @@ function ProductManagerChild({ idProductEdit, setShowModel }) {
               )}
               onClick={handleClickSubmit}
             >
-              Sửa
+              {idProductEdit ? "Cập nhật" : "Thêm"}
             </button>
           </form>
         </div>

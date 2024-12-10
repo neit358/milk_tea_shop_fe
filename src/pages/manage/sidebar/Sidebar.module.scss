@@ -1,19 +1,42 @@
 .sidebar {
-  display: flex;
-  flex-direction: column;
-  background-color: #f4f4f9;
-  width: 250px;
-  height: 100vh;
-  padding: 20px;
-  border-right: 1px solid #ddd;
-  gap: 10px;
+  position: relative;
+  background-color: #ffffff;
+  border-right: 1px solid #e0e0e0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  height: auto;
 
-  &__title {
-    padding: 15px;
-    font-size: 18px;
-    font-weight: bold;
-    color: #2c3e50;
-    border-bottom: 2px solid var(--primary-color);
-    margin-bottom: 10px;
+  &__employee {
+    padding: 20px;
+    background-color: var(--primary-light, #f0f8ff);
+    border: 1px solid #ddd;
+    text-align: center;
+    border-radius: 5px;
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+
+    &__name {
+      font-weight: bold;
+      font-size: 18px;
+      color: #2c3e50;
+      text-transform: capitalize;
+    }
+  }
+
+  &__content {
+    position: sticky;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 20px 0;
+
+    &__title {
+      padding: 10px;
+      font-size: 18px;
+      font-weight: bold;
+      color: var(--primary-dark, #34495e);
+      border-bottom: 2px solid var(--primary-color, #3498db);
+      margin-bottom: 15px;
+      text-align: center;
+    }
   }
 }

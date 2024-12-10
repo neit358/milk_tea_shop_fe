@@ -14,7 +14,6 @@ import classNames from "classnames/bind";
 import styles from "./Home.module.scss";
 import HomeChild from "./homeChild/HomeChild";
 import * as productService from "../../services/product.service";
-import ToastInformation from "../../Components/Notification";
 
 const cx = classNames.bind(styles);
 
@@ -26,8 +25,8 @@ const sortOptions = [
 ];
 
 const showOptions = [
-  { value: 10, name: "Show 10" },
-  { value: 20, name: "Show 20" },
+  { value: 12, name: "Show 12" },
+  { value: 24, name: "Show 24" },
   { value: -1, name: "Show All" },
 ];
 
@@ -36,13 +35,10 @@ function Home({ search = {}, category = {} }) {
   const [listSanPhamRecommend, setListSanPhamRecommend] = useState([]);
   const [sortOrder, setSortOrder] = useState("");
   const [total, setTotal] = useState(0);
-  const [limitItem, setLimitItem] = useState(10);
+  const [limitItem, setLimitItem] = useState(12);
   const [pageIndex, setPageIndex] = useState(1);
   const [numberPage, setNumberPage] = useState(1);
-  const [user] = useState(JSON.parse(localStorage.getItem("user") || null));
-  const [bool, setBool] = useState(false);
-  const [content, setContent] = useState("");
-  const [title, setTitle] = useState("");
+  const [itemCount, setItemCount] = useState(0);
 
   useEffect(() => {
     setPageIndex(1);
@@ -61,6 +57,7 @@ function Home({ search = {}, category = {} }) {
         setListSanPham(response.data.result.data);
         setTotal(response.data.result.pagination.total);
         setLimitItem(response.data.result.pagination.limit);
+        setItemCount(response.data.result.pagination.itemCount);
         setNumberPage(response.data.result.pagination.totalPages);
       }
     };
@@ -147,13 +144,7 @@ function Home({ search = {}, category = {} }) {
           <div className={cx("home__shop__name")}>
             <div className={cx("home__shop__name--left")}>Shop</div>
             <div className={cx("home__shop__name--right")}>
-              Showing{" "}
-              {limitItem < total
-                ? limitItem !== -1
-                  ? limitItem
-                  : total
-                : total}{" "}
-              of {total} results
+              Showing {itemCount} of {total} results
             </div>
           </div>
           <div className={cx("home__shop__selection")}>
@@ -248,19 +239,13 @@ function Home({ search = {}, category = {} }) {
             </div>
           </div>
           <ul className={cx("home__shop__product", "grid__row")}>
-            {listSanPham.map((sanPham, index) => (
-              <HomeChild key={index} sanPham={sanPham} />
+            {listSanPham.map((sanPham) => (
+              <HomeChild key={sanPham._id} sanPham={sanPham} />
             ))}
           </ul>
           <div className={cx("home__shop__page")}>
             <div className={cx("home__shop__page--left")}>
-              Showing{" "}
-              {limitItem < total
-                ? limitItem !== -1
-                  ? limitItem
-                  : total
-                : total}{" "}
-              – {total} results
+              Showing {itemCount} of {total} results
             </div>
             <div className={cx("home__shop__page--right")}>
               {Array.from({ length: numberPage }, (_, index) => index + 1).map(
@@ -282,20 +267,12 @@ function Home({ search = {}, category = {} }) {
           </div>
         </div>
       </div>
-      {bool && (
-        <ToastInformation
-          content={content}
-          title={title}
-          bool={bool}
-          setBool={setBool}
-          timeOut={3000}
-        />
-      )}
     </>
   );
 }
 Home.propTypes = {
   search: PropTypes.object,
+  category: PropTypes.object,
 };
 
 export default Home;

@@ -6,6 +6,8 @@ import Home from "../pages/home";
 import ProductDetail from "../pages/productDetail/ProductDetail";
 import Cart from "~/pages/cart";
 import Manage from "~/pages/manage";
+import Order from "~/pages/order";
+import Account from "~/pages/Account";
 
 const configRoutes = [
   {
@@ -43,6 +45,18 @@ const configRoutes = [
     component: Manage,
     layout: null,
     name: "manage",
+  },
+  {
+    path: config.routes.order,
+    component: Order,
+    layout: LayoutOnlyHeaderAndFooter,
+    name: "order",
+  },
+  {
+    path: config.routes.account,
+    component: Account,
+    layout: LayoutOnlyHeaderAndFooter,
+    name: "account",
   },
 ];
 

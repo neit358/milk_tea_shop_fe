@@ -1,3 +1,10 @@
+@mixin text_model {
+  color: #1900ff;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
 .modal {
   position: fixed;
   top: 0;
@@ -42,7 +49,7 @@
     &__form {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 20px;
+      gap: 10px;
 
       &__image {
         padding: 10px;
@@ -52,22 +59,6 @@
       }
 
       label {
-        display: flex;
-        flex-direction: column;
-        & > div {
-          width: 100%;
-          margin-top: 5px;
-        }
-        input,
-        select,
-        textarea {
-          width: 100%;
-          padding: 8px;
-          margin-top: 5px;
-          border: 1px solid #ccc;
-          border-radius: 5px;
-        }
-
         textarea {
           resize: vertical;
         }
@@ -83,14 +74,20 @@
           flex: 2;
         }
 
-        input {
-          flex: 1;
-          margin: 0 !important;
+        &__delete {
+          flex: none !important;
+          @include text_model;
         }
 
-        button {
-          margin: 0 !important;
+        &__size {
+          display: flex;
+          flex-direction: column;
         }
+      }
+
+      &__add {
+        @include text_model;
+        margin: 5px;
       }
 
       button[type="button"] {
@@ -128,6 +125,65 @@
 
       &--center-button {
         justify-self: center;
+      }
+
+      &__group {
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+
+        &__label,
+        &__message {
+          text-align: left;
+        }
+
+        &__label {
+          font-weight: 700;
+          padding-bottom: 6px;
+          line-height: 1.8rem;
+          font-size: 1.4rem;
+        }
+
+        &__control {
+          height: 40px;
+          padding: 8px 12px;
+          border: 1px solid #b3b3b3;
+          border-radius: 5px;
+          outline: none;
+          font-size: 1.4rem;
+          margin-top: 5px;
+
+          &:hover {
+            border-color: var(--primary-color);
+          }
+
+          &--select {
+            padding: 0;
+            border: none;
+            border-radius: 3px;
+            outline: none;
+            height: auto;
+
+            &:hover {
+              border: none;
+            }
+          }
+        }
+
+        &.invalid &__control {
+          border-color: #f33a58;
+        }
+
+        &.invalid &__message {
+          color: #f33a58;
+        }
+
+        &__message {
+          font-size: 1.2rem;
+          line-height: 1.6rem;
+          padding: 4px 0 0;
+          height: 1.6rem;
+        }
       }
     }
   }

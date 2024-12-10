@@ -4,30 +4,30 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSortDown } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import * as typeService from "../../../../../services/type.service";
+import * as categoryService from "~/services/category.service";
 import HeaderFooterSelectionMenu from "./headerFooterSelectionMenu/HeaderFooterSelectionMenu";
 
 const cx = classNames.bind(styles);
 
-function HeaderFooterSelection({ type }) {
-  const [menu, setMenu] = useState([]);
+function HeaderFooterSelection({ type, setCategory, category }) {
+  const [categories, setCategories] = useState([]);
 
   useEffect(() => {
     switch (type.id) {
       case 1:
         break;
       case 2:
-        handleGetMenu();
+        handleGetCategories();
         break;
       default:
         break;
     }
   }, []);
 
-  const handleGetMenu = async () => {
-    const response = await typeService.getTypes();
+  const handleGetCategories = async () => {
+    const response = await categoryService.getCategories();
     if (response.data.success) {
-      setMenu(response.data.result);
+      setCategories(response.data.result);
     }
   };
 
@@ -46,8 +46,13 @@ function HeaderFooterSelection({ type }) {
       </div>
       {type.id !== 1 && (
         <ul className={cx("headerFooterSelection__list")}>
-          {menu.map((detail, index) => (
-            <HeaderFooterSelectionMenu key={index} detail={detail} />
+          {categories.map((item, index) => (
+            <HeaderFooterSelectionMenu
+              key={index}
+              item={item}
+              setCategory={setCategory}
+              category={category}
+            />
           ))}
         </ul>
       )}
@@ -60,6 +65,8 @@ HeaderFooterSelection.propTypes = {
     name: PropTypes.string.isRequired,
     url: PropTypes.string.isRequired,
   }).isRequired,
+  setCategory: PropTypes.func,
+  category: PropTypes.object,
 };
 
 export default HeaderFooterSelection;

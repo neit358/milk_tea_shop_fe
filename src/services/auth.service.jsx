@@ -34,3 +34,14 @@ export const logout = async () => {
     };
   }
 };
+
+export const checkAuth = async () => {
+  try {
+    const res = await httpRequest.get(`${auth}/checkAuth`);
+    return res;
+  } catch (err) {
+    return {
+      data: err.response.data,
+    };
+  }
+};
