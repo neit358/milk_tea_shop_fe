@@ -7,11 +7,31 @@
   &__column {
     padding: 35px 8px 18px;
 
-    &__icon {
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
+    &--notBranch {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
       height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    &__content {
+      &--notBranch {
+        font-size: 28px;
+        color: var(--primary-color);
+      }
+    }
+
+    &__icon {
+      height: 100%;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
 
       &__detail {
         height: 20px;

@@ -1,17 +1,19 @@
-import classNames from "classnames/bind";
-import styles from "./ProductManager.module.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faPenToSquare,
   faPlus,
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
+
+import classNames from "classnames/bind";
+import styles from "./ProductManager.module.scss";
 import ProductManagerChild from "./productManagerChild/ProductManagerchild";
 import { useEffect, useState } from "react";
 import * as productService from "~/services/product.service";
 import LoadingComponent from "~/Components/Loading";
 import ToastInformation from "~/Components/Notification";
 import ConfirmModel from "~/Components/ConfirmModel";
+import { convertCurrency } from "~/shared/services/convert.service";
 
 const cx = classNames.bind(styles);
 
@@ -44,19 +46,19 @@ function ProductManager() {
     try {
       setIsLoading(true);
       const response = await productService.deleteProduct(idProductDelete);
-      setContent(response.data.message);
       setBool(true);
+      setContent(response.data.message);
+      setTitle(response.data.success ? "Success" : "Error");
       if (response.data.success) {
-        setTitle("Success");
         setTimeout(() => {
           setIsLoading(false);
           window.location.reload();
         }, 3000);
-        return;
       }
+    } catch {
+      setContent("API không tồn tại!");
       setTitle("Error");
-    } catch (error) {
-      console.error("Failed to delete product:", error);
+      setBool(true);
     }
   };
 
@@ -70,7 +72,7 @@ function ProductManager() {
       }
     };
     fetchData();
-  }, []);
+  }, [showModel]);
 
   const handleClickCreate = () => {
     setIdProductEdit("");
@@ -87,8 +89,8 @@ function ProductManager() {
             <span>Thêm Sản Phẩm</span>
           </button>
         </div>
-        <div className={cx("product__container")}>
-          <table className={cx("product__table")}>
+        <div className={cx("product__list")}>
+          <table className={cx("product__list__table")}>
             <thead>
               <tr>
                 <th>Tên Sản Phẩm</th>
@@ -103,25 +105,25 @@ function ProductManager() {
               {listProduct.map((product, index) => (
                 <tr key={index}>
                   <td>{product.tenSanPham}</td>
-                  <td>{product.gia.toLocaleString()} VND</td>
+                  <td>{convertCurrency(product.gia)}</td>
                   <td>{product.trangThai ? "Hoạt động" : "Ngừng bán"}</td>
                   <td>{product.deXuat ? "Có" : "Không"}</td>
                   <td>
                     <img
                       src={product.hinhAnh}
                       alt={product.tenSanPham}
-                      className={cx("product__table__image")}
+                      className={cx("product__list__table__image")}
                     />
                   </td>
                   <td>
                     <FontAwesomeIcon
                       icon={faPenToSquare}
-                      className={cx("product__table__icon")}
+                      className={cx("product__list__table__icon")}
                       onClick={() => handleClickEdit(product._id)}
                     />
                     <FontAwesomeIcon
                       icon={faTrash}
-                      className={cx("product__table__icon")}
+                      className={cx("product__list__table__icon")}
                       onClick={() => handleClickDelete(product._id)}
                     />
                   </td>

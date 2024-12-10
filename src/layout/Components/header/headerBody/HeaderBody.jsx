@@ -1,5 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
+  faBagShopping,
   faCartShopping,
   faHeart,
   faMagnifyingGlass,
@@ -15,8 +16,10 @@ import classNames from "classnames/bind";
 import ToastInformation from "~/Components/Notification";
 import { IconLogo } from "~/Components/Icons";
 import { regexSearchMapper } from "../../../../regex/search.regex";
-import * as authServices from "~/services/auth.service";
-import * as cartServices from "~/services/cart.service";
+import * as authService from "~/services/auth.service";
+import * as cartService from "~/services/cart.service";
+import LoadingComponent from "~/Components/Loading";
+import * as invoiceService from "~/services/order.service";
 
 const cx = classNames.bind(styles);
 
@@ -25,7 +28,9 @@ function HeaderBody({ setSearch }) {
   const [content, setContent] = useState("");
   const [title, setTitle] = useState("");
   const [bool, setBool] = useState(false);
-  const [quality, setQuantity] = useState(0);
+  const [qualityCart, setQualityCart] = useState(0);
+  const [qualityOrder, setQualityOrder] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
 
@@ -45,33 +50,59 @@ function HeaderBody({ setSearch }) {
   };
 
   const handleOnClickLogout = async () => {
-    const response = await authServices.logout();
+    setIsLoading(true);
+    const response = await authService.logout();
     setBool(true);
     setContent(response.data.message);
-    if (response.data.success) {
-      setTitle("Success");
-      setTimeout(() => {
-        localStorage.removeItem("user");
-        window.location.reload();
-        navigate("/");
-      }, 3000);
-    } else {
-      setTitle("Warn");
-      setTimeout(() => {
-        localStorage.removeItem("user");
-        window.location.reload();
-        navigate("/");
-      }, 3000);
+
+    if (!response.data.success) {
+      setTitle("Error");
+      setIsLoading(false);
+      return;
     }
+
+    localStorage.removeItem("user");
+    setTitle("Success");
+    setTimeout(() => {
+      setIsLoading(true);
+      navigate("/");
+      window.location.reload();
+    }, 3000);
   };
 
   useEffect(() => {
     const fetchApi = async () => {
       if (user) {
-        const response = await cartServices.getCarts(user._id);
-        if (response.data.success) {
-          const cart = response.data.result.items;
-          setQuantity(cart.length);
+        try {
+          const response = await cartService.getCarts(user._id);
+          if (response.data.success) {
+            const cart = response.data.result.items;
+            setQualityCart(cart.length);
+          }
+        } catch {
+          setBool(true);
+          setContent("Lỗi kết nối đến server");
+          setTitle("Error");
+        }
+      }
+    };
+
+    fetchApi();
+  }, [user]);
+
+  useEffect(() => {
+    const fetchApi = async () => {
+      if (user) {
+        try {
+          const response = await invoiceService.getOrder();
+          if (response.data.success) {
+            const invoice = response.data.result;
+            setQualityOrder(invoice.length);
+          }
+        } catch {
+          setBool(true);
+          setContent("Lỗi kết nối đến server");
+          setTitle("Error");
         }
       }
     };
@@ -132,6 +163,36 @@ function HeaderBody({ setSearch }) {
                 Yêu thích
               </div>
             </div>
+
+            <NavLink to="/don_mua">
+              <div className={cx("header__body__child__selection__cart")}>
+                <div
+                  className={cx("header__body__child__selection__cart__icon")}
+                >
+                  <FontAwesomeIcon
+                    icon={faBagShopping}
+                    className={cx("header__body__child__selection__icon")}
+                  />
+                  <div
+                    className={cx(
+                      "header__body__child__selection__cart__icon__quality"
+                    )}
+                  >
+                    {qualityOrder}
+                  </div>
+                </div>
+                <span
+                  className={cx(
+                    "header__body__child__selection__cart__content"
+                  )}
+                ></span>
+                <div
+                  className={cx("header__body__child__selection__cart__hover")}
+                >
+                  Đơn mua
+                </div>
+              </div>
+            </NavLink>
             <div className={cx("header__body__child__selection__acc")}>
               <FontAwesomeIcon
                 icon={faUser}
@@ -208,7 +269,7 @@ function HeaderBody({ setSearch }) {
                       "header__body__child__selection__cart__icon__quality"
                     )}
                   >
-                    {quality}
+                    {qualityCart}
                   </div>
                 </div>
                 <span
@@ -233,6 +294,8 @@ function HeaderBody({ setSearch }) {
               timeOut={3000}
             />
           )}
+
+          {isLoading && <LoadingComponent />}
         </div>
       </div>
     </div>

@@ -6,7 +6,7 @@ import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import styles from "./RegisterPage.module.scss";
 import { NavLink, useNavigate } from "react-router-dom";
 
-import * as authServices from "~/services/auth.service";
+import * as authService from "~/services/auth.service";
 import ToastInformation from "~/Components/Notification";
 
 const cx = classNames.bind(styles);
@@ -35,7 +35,7 @@ function RegisterPage() {
       matKhau: password,
     };
 
-    const response = await authServices.register(requestData);
+    const response = await authService.register(requestData);
 
     setBool(true);
     setContent(response.data.message);

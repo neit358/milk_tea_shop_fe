@@ -15,7 +15,7 @@ export const getCarts = async (id) => {
 
 export const addCart = async (item) => {
   try {
-    const res = await httpRequest.post(`${cart}/`, { item });
+    const res = await httpRequest.post(`${cart}/`, item);
     return res;
   } catch (err) {
     return {
@@ -24,9 +24,20 @@ export const addCart = async (item) => {
   }
 };
 
-export const deleteCart = async (item) => {
+export const deleteCart = async (id, data) => {
   try {
-    const res = await httpRequest.patch(`${cart}/`, { item });
+    const res = await httpRequest.patch(`${cart}/${id}`, data);
+    return res;
+  } catch (err) {
+    return {
+      data: err.response.data,
+    };
+  }
+};
+
+export const updateCart = async (id, data) => {
+  try {
+    const res = await httpRequest.patch(`${cart}/update/${id}`, data);
     return res;
   } catch (err) {
     return {

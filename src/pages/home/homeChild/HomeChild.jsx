@@ -4,30 +4,23 @@ import {
   faRepeat,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import numeral from "numeral";
-
 import classNames from "classnames/bind";
+import { useEffect, useState } from "react";
+import { NavLink } from "react-router-dom";
+import PropTypes from "prop-types";
+
 import styles from "./HomeChild.module.scss";
+import { convertCurrency } from "~/shared/services/convert.service";
+import Image from "~/Components/Image";
+import ProductDetail from "~/pages/productDetail";
 
 const cx = classNames.bind(styles);
 
-import { useState } from "react";
-import PropTypes from "prop-types";
-import { NavLink } from "react-router-dom";
-import LoadingComponent from "~/Components/Loading";
-import ToastInformation from "../../../Components/Notification";
-import Image from "../../../Components/Image/Image";
-import ProductDetail from "../../productDetail/ProductDetail";
-
 function HomeChild({ sanPham }) {
-  const [bool, setBool] = useState(false);
-  const [content, setContent] = useState("");
-  const [title, setTitle] = useState("");
-  const [user] = useState(JSON.parse(localStorage.getItem("user") || null));
-  const [isLoading, setIsLoading] = useState(false);
   const [addCart, setAddCart] = useState(false);
+  const [promotion, setPromotion] = useState(null);
 
-  const formattedPrice = numeral(sanPham.gia).format("0,0") + " đ";
+  const formattedPrice = convertCurrency(sanPham.gia);
 
   const handleModelAddCart = (e) => {
     e.preventDefault();
@@ -35,12 +28,29 @@ function HomeChild({ sanPham }) {
     setAddCart(true);
   };
 
+  useEffect(() => {
+    if (sanPham.khuyenMai.length) {
+      sanPham.khuyenMai?.forEach((item) => {
+        if (
+          new Date(item.ngayBatDau) <= new Date() &&
+          new Date(item.ngayKetThuc) >= new Date() &&
+          item?.trangThai &&
+          !item?.isDel
+        ) {
+          setPromotion(item);
+        }
+      });
+    }
+  }, []);
+
   return (
     <>
       <NavLink to={`/chi_tiet_san_pham/${sanPham._id}`}>
         <li className={cx("homeChild", "grid__column__10--3")}>
           <div className={cx("homeChild__child")}>
-            <div className={cx("homeChild__child__type")}></div>
+            <div className={cx("homeChild__child__type")}>
+              {sanPham.loaiSanPham.tenLoaiSanPham}
+            </div>
             <div className={cx("homeChild__child__name")}>
               {sanPham.tenSanPham}
             </div>
@@ -94,29 +104,22 @@ function HomeChild({ sanPham }) {
                 </span>
               </div>
             </div>
+            {promotion && (
+              <div className={cx("homeChild__child__tag")}>{promotion.tag}</div>
+            )}
           </div>
         </li>
       </NavLink>
       {addCart && (
-        <div className={cx("modelAddCart")} onClick={() => setAddCart(false)}>
+        <div className={cx("modelCart")} onClick={() => setAddCart(false)}>
           <div
-            className={cx("modelAddCart__content")}
+            className={cx("modelCart__content")}
             onClick={(e) => e.stopPropagation()}
           >
             <ProductDetail idProduct={sanPham._id} />
           </div>
         </div>
       )}
-      {bool && (
-        <ToastInformation
-          content={content}
-          title={title}
-          bool={bool}
-          setBool={setBool}
-          timeOut={3000}
-        />
-      )}
-      {isLoading && <LoadingComponent />}
     </>
   );
 }
@@ -128,6 +131,25 @@ HomeChild.propTypes = {
     moTa: PropTypes.string,
     kichThuoc: PropTypes.array,
     hinhAnh: PropTypes.string,
+    loaiSanPham: PropTypes.shape({
+      tenLoaiSanPham: PropTypes.string,
+    }),
+    khuyenMai: PropTypes.arrayOf(
+      PropTypes.shape({
+        _id: PropTypes.string.isRequired,
+        tenKhuyenMai: PropTypes.string,
+        moTa: PropTypes.string,
+        phuongThucKhuyenMai: PropTypes.string,
+        giaTriKhuyenMai: PropTypes.number,
+        giaTriDonHangToiThieu: PropTypes.number,
+        giaToiDaKhuyenMai: PropTypes.number,
+        ngayBatDau: PropTypes.string,
+        ngayKetThuc: PropTypes.string,
+        trangThai: PropTypes.bool,
+        tag: PropTypes.string,
+        isDel: PropTypes.bool,
+      })
+    ),
   }).isRequired,
 };
 

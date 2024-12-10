@@ -1,10 +1,11 @@
 import classNames from "classnames/bind";
 import styles from "./HeaderFooter.module.scss";
 import HeaderFooterSelection from "./headerFooterSelection/HeaderFooterSelection";
+import PropTypes from "prop-types";
 
 const cx = classNames.bind(styles);
 
-function HeaderFooter() {
+function HeaderFooter({ setCategory, category }) {
   const types = [
     {
       id: 1,
@@ -31,7 +32,12 @@ function HeaderFooter() {
         >
           <ul className={cx("header__footer__child__selection")}>
             {types.map((type, index) => (
-              <HeaderFooterSelection key={index} type={type} />
+              <HeaderFooterSelection
+                key={index}
+                type={type}
+                setCategory={setCategory}
+                category={category}
+              />
             ))}
           </ul>
         </div>
@@ -39,5 +45,10 @@ function HeaderFooter() {
     </div>
   );
 }
+
+HeaderFooter.propTypes = {
+  setCategory: PropTypes.func,
+  category: PropTypes.object,
+};
 
 export default HeaderFooter;

@@ -2,20 +2,21 @@ import classNames from "classnames/bind";
 import styles from "./SideBar.module.scss";
 import config from "~/config/config";
 import { NavLink } from "react-router-dom";
-import SideBarType from "./sideBarType";
 import { useEffect, useState } from "react";
-import * as typeService from "../../../services/type.service";
+import * as CategoryService from "../../../services/category.service";
+import SideBarChild from "./sideBarChild";
+import PropTypes from "prop-types";
 
 const cx = classNames.bind(styles);
 
-function SideBar({ setCategory }) {
-  const [listType, setListType] = useState([]);
+function SideBar({ setCategory, category }) {
+  const [listCategory, setListCategory] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await typeService.getTypes();
+      const response = await CategoryService.getCategories();
       if (response.data.success) {
-        setListType(response.data.result);
+        setListCategory(response.data.result);
       }
     };
     fetchData();
@@ -23,10 +24,6 @@ function SideBar({ setCategory }) {
 
   const handleClickCategory = (id) => {
     setCategory(id ? { loaiSanPham: id } : {});
-  };
-
-  const handleClickItemCategory = () => {
-    handleClickCategory("");
   };
 
   return (
@@ -42,23 +39,26 @@ function SideBar({ setCategory }) {
                 <NavLink
                   to={config.routes.home}
                   className={cx("link-href")}
-                  onClick={handleClickItemCategory}
+                  onClick={() => handleClickCategory("")}
+                  style={{
+                    fontWeight: !category?.loaiSanPham ? "bolder" : "normal",
+                  }}
                 >
                   <div
                     className={cx(
                       "sidebar__wrapper__child__body__list__select__parent"
                     )}
-                    data-id=""
                   >
                     Tất cả loại đồ uống
                   </div>
                 </NavLink>
               </li>
 
-              {listType.map((type, index) => (
-                <SideBarType
+              {listCategory.map((item, index) => (
+                <SideBarChild
                   key={index}
-                  type={type}
+                  item={item}
+                  category={category}
                   handleClickCategory={handleClickCategory}
                 />
               ))}
@@ -69,5 +69,10 @@ function SideBar({ setCategory }) {
     </div>
   );
 }
+
+SideBar.propTypes = {
+  setCategory: PropTypes.func.isRequired,
+  category: PropTypes.object.isRequired,
+};
 
 export default SideBar;

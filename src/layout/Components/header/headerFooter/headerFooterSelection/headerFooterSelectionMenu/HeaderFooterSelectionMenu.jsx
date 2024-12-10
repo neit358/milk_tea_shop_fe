@@ -4,11 +4,19 @@ import PropTypes from "prop-types";
 
 const cx = classNames.bind(style);
 
-function HeaderFooterSelectionMenu({ detail }) {
+function HeaderFooterSelectionMenu({ item, setCategory, category }) {
   return (
-    <li className={cx("HeaderFooterSelectionMenu")}>
-      <div className={cx("HeaderFooterSelectionMenu__name")}>
-        {detail.tenLoaiSanPham}
+    <li
+      className={cx("HeaderFooterSelectionMenu")}
+      onClick={() => setCategory(item._id)}
+    >
+      <div
+        className={cx("HeaderFooterSelectionMenu__name")}
+        style={{
+          fontWeight: category?.loaiSanPham === item._id ? "bolder" : "normal",
+        }}
+      >
+        {item.tenLoaiSanPham}
       </div>
       <ul className={cx("HeaderFooterSelectionMenu__list")}></ul>
     </li>
@@ -16,9 +24,12 @@ function HeaderFooterSelectionMenu({ detail }) {
 }
 
 HeaderFooterSelectionMenu.propTypes = {
-  detail: PropTypes.shape({
+  item: PropTypes.shape({
+    _id: PropTypes.string.isRequired,
     tenLoaiSanPham: PropTypes.string.isRequired,
   }).isRequired,
+  setCategory: PropTypes.func,
+  category: PropTypes.object,
 };
 
 export default HeaderFooterSelectionMenu;
